@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # URL of the web application
-URL="http://localhost"
+URL="http://localhost:8081"
 
 # Expected content
 EXPECTED_CONTENT="Welcome to My Simple Web App"
