@@ -29,7 +29,7 @@ pipeline {
                 // Add your deployment script here
                 // Example: ssh to the webserver and deploy the code
                 sh '''
-                ssh -t ubuntu@${EC2_IP} && git clone ${REPO_URL}
+                ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}
                 '''
             }
         }
