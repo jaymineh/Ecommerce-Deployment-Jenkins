@@ -30,7 +30,6 @@ pipeline {
                 sh "ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}"
                 }
             }
-            
         }
     }
 }
