@@ -9,9 +9,17 @@ pipeline {
     }
 
     stages {
+        stage("Initial cleanup") {
+          steps {
+            dir("${WORKSPACE}") {
+              deleteDir()
+            }
+          }
+        }
+
         stage('Checkout') {
             steps {
-                git url: "${REPO_URL}", credentialsId: 'dockerhub'
+                git branch: 'main', url: '${REPO_URL}'
             }
         }
 
