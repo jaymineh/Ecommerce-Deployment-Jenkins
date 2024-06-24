@@ -1,1 +1,1 @@
-# Automating Deployment Of AN E-Commerce Website
+# Automating Deployment Of An E-Commerce Website
