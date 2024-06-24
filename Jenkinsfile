@@ -26,12 +26,11 @@ pipeline {
 
         stage('Deploy to Webserver') {
             steps {
-                // Add your deployment script here
-                // Example: ssh to the webserver and deploy the code
-                sh '''
-                ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}
-                '''
+                sshagent (['webserver']) {
+                    ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}
+                }
             }
+            
         }
     }
 }
