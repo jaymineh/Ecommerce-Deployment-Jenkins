@@ -19,7 +19,7 @@ pipeline {
 
         stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: '${REPO_URL}'
+                git branch: 'main', url: 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
             }
         }
 
