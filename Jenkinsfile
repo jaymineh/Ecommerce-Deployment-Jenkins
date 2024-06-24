@@ -17,7 +17,7 @@ pipeline {
           }
         }
 
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
                 git branch: 'main', url: '${REPO_URL}'
             }
