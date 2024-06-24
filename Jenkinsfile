@@ -27,7 +27,7 @@ pipeline {
         stage('Deploy to Webserver') {
             steps {
                 sshagent (['webserver']) {
-                    ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}
+                sh "ssh -tt ubuntu@${EC2_IP} && git clone ${REPO_URL}"
                 }
             }
             
