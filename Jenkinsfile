@@ -28,7 +28,7 @@ pipeline {
                 // Add your deployment script here
                 // Example: ssh to the webserver and deploy the code
                 sh '''
-                ssh ubuntu@51.20.43.193 && git clone https://github.com/jaymineh/Jenkins-Pipeline-Simple
+                ssh -A ubuntu@51.20.43.193 && git clone https://github.com/jaymineh/Jenkins-Pipeline-Simple
                 '''
             }
         }
