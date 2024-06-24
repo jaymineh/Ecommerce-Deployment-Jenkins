@@ -6,6 +6,7 @@ pipeline {
         REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
         DOCKER_IMAGE = 'jaymineh/webapp'
         DOCKER_TAG = 'latest'
+        EC2_IP = '51.20.43.193'
     }
 
     stages {
@@ -28,7 +29,7 @@ pipeline {
                 // Add your deployment script here
                 // Example: ssh to the webserver and deploy the code
                 sh '''
-                ssh -A ubuntu@51.20.43.193 && git clone https://github.com/jaymineh/Jenkins-Pipeline-Simple
+                ssh -t ubuntu@${EC2_IP} && git clone ${REPO_URL}
                 '''
             }
         }
