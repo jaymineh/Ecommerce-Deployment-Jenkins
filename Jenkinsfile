@@ -60,10 +60,17 @@ pipeline {
             }
         }
 
+        stage('Perform Unit Test') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; chmod +x unit-test.sh; sh unit-test.sh'" }
+            }
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 sshagent (['webserver']) {
-                sh "${move} ubuntu@${EC2_IP} 'sudo docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}'"
+                sh "${move} ubuntu@${EC2_IP} 'docker login -u=${DOCKERHUB_USERNAME} -p=${DOCKERHUB_PASSWORD}'"
                 sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
             }
         }
