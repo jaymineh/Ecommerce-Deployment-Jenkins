@@ -1,14 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
-        DOCKER_IMAGE = 'jaymineh/webapp'
-        DOCKER_TAG = 'latest'
-        EC2_IP = '44.204.140.25'
-    }
-
     stages {
         stage("Initial cleanup") {
           steps {
