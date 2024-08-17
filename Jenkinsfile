@@ -27,9 +27,9 @@ pipeline {
             steps {
                 sshagent (['webserver']) {
                 sh "${move} ubuntu@${EC2_IP} 'rm -rf ${DOCKER_DIR}'"
-                sh "${move} ubuntu@${EC2_IP} 'docker rm -f ${CONTAINER_NAME}'"
-                sh "${move} ubuntu@${EC2_IP} 'docker rmi -f ${DOCKER_IMAGE}'"
-                sh "${move} ubuntu@${EC2_IP} 'docker rmi -f ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rm -f ${CONTAINER_NAME}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rmi -f ${DOCKER_IMAGE}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rmi -f ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
             }
         }
 
@@ -49,22 +49,22 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sshagent (['webserver']) {
-                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; docker build -t ${DOCKER_IMAGE} .'" }
+                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; sudo docker build -t ${DOCKER_IMAGE} .'" }
             }
         }
 
         stage('Run Docker Container') {
             steps {
                 sshagent (['webserver']) {
-                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; docker run -d --name ${CONTAINER_NAME} -p ${PORT_MAP} ${DOCKER_IMAGE}'" }
+                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; sudo docker run -d --name ${CONTAINER_NAME} -p ${PORT_MAP} ${DOCKER_IMAGE}'" }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
                 sshagent (['webserver']) {
-                sh "${move} ubuntu@${EC2_IP} 'docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}'"
-                sh "${move} ubuntu@${EC2_IP} 'docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
             }
         }
     }
