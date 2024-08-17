@@ -32,11 +32,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Build') {
-            steps {
-
-            }
-        }
     }
 }
