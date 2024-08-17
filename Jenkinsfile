@@ -21,15 +21,21 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
+                git branch: 'main', url: ${REPO_URL}
             }
         }
 
         stage('Deploy Code to Webserver') {
             steps {
                 sshagent (['webserver']) {
-                sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} && git clone ${REPO_URL}"
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} && mkdir /home/ubuntu/toy && cd /home/ubuntu/toy git clone ${REPO_URL}"
                 }
+            }
+        }
+
+        stage('Build') {
+            steps {
+
             }
         }
     }
