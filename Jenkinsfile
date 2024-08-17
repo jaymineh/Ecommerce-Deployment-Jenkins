@@ -33,5 +33,10 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+
+            }
+        }
     }
 }
