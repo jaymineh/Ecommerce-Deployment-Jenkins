@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        DOCKERHUB_USERNAME = credentials('dockerhub-username')
         DOCKERHUB_PASSWORD = credentials('dockerhub-password')
         REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
         DOCKER_IMAGE = 'jaymineh/webapp'
@@ -27,7 +28,7 @@ pipeline {
         stage('Deploy to Webserver') {
             steps {
                 sshagent (['webserver']) {
-                sh "ssh -T ubuntu@${EC2_IP} && git clone ${REPO_URL}"
+                sh "ssh -A ubuntu@${EC2_IP} && git clone ${REPO_URL}"
                 }
             }
         }
