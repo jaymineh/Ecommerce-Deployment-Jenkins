@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        DOCKERHUB_USERNAME = credentials('dockerhub-username')
+        DOCKERHUB_PASSWORD = credentials('dockerhub-password')
         REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
         DOCKER_IMAGE = 'jaymineh/webapp'
         DOCKER_TAG = 'latest'
