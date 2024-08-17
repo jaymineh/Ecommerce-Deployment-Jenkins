@@ -28,7 +28,7 @@ pipeline {
         stage('Deploy Code to Webserver') {
             steps {
                 sshagent (['webserver']) {
-                sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} && pwd && git clone ${REPO_URL}"
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} && pwd && whoami && ip addr && git clone ${REPO_URL}"
                 }
             }
         }
