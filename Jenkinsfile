@@ -21,7 +21,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: ${REPO_URL}
+                git branch: 'main', url: "${REPO_URL}"
             }
         }
 
@@ -33,10 +33,5 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-
-            }
-        }
     }
 }
