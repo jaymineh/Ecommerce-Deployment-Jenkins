@@ -69,7 +69,8 @@ pipeline {
 
         stage('Tag Docker Image') {
             steps {
-                    sh "docker tag ${DOCKER_IMAGE} ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}"
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'docker tag ${DOCKER_IMAGE} ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
             }
         }
 
