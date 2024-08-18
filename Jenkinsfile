@@ -6,7 +6,7 @@ pipeline {
         DOCKERHUB_PASSWORD = credentials('dockerhub-password')
         REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
         DOCKER_IMAGE = 'simple-webapp'
-        DOCKER_TAG = '0.1 alpha'
+        DOCKER_TAG = '0.1-alpha'
         CONTAINER_NAME = 'ecomm-webapp'
         PORT_MAP = '8084:80'
         EC2_IP = '44.204.140.25'
