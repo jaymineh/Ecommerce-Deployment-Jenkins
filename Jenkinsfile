@@ -71,9 +71,8 @@ pipeline {
             steps {
                 sshagent (['webserver']) {
                     script {
-                        withCredentials ([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCK_USERNAME', passwordVariable: 'DOCK_PASSWORD')]) {
-                            sh "${move} ubuntu@${EC2_IP} 'echo ${DOCK_PASSWORD} | docker login -u ${DOCK_USERNAME} --password-stdin'"
-                            sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+                        sh "${move} ubuntu@${EC2_IP} 'echo ${DOCK_PASSWORD} > /tmp/docker_passwd.txt; docker login -u ${DOCK_USERNAME} --password-stdin < /tmp/docker_passwd.txt'"
+                        sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'"
                     }
                 }
             }
