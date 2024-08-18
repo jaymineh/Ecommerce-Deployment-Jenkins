@@ -1,0 +1,3 @@
+When writing documentation, include part for fixing jenkins ssh issue. (copy .ssh folder to var/lib/jenkins and change ownership + using nostrictchecking).
+include part of giving jenkins access to run docker on remote server by adding jenkins user to docker group.
+include observation you noticed about running commands using jenkins after ssh. you have to use semi colons and single quotes to demarcate the commands to be run on a remote server
