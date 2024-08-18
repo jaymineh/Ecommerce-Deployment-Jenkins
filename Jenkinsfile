@@ -70,12 +70,9 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 sshagent (['webserver']) {
-                    script {
-                        sh "${move} ubuntu@${EC2_IP} 'echo ${DOCKERHUB_PASSWORD} > /tmp/docker_passwd.txt; docker login -u ${DOCKERHUB_USERNAME} --password-stdin < /tmp/docker_passwd.txt'"
-                        sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'"
-                    }
-                }
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
             }
         }
+    
     }
 }
