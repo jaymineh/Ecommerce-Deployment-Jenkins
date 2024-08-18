@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     environment {
+        DOCKERHUB_USERNAME = credentials('dockerhub-username')
+        DOCKERHUB_PASSWORD = credentials('dockerhub-password')
         REPO_URL = 'https://github.com/jaymineh/Jenkins-Pipeline-Simple.git'
         DOCKER_IMAGE = 'simple-webapp'
         DOCKER_TAG = 'latest'
@@ -69,8 +71,8 @@ pipeline {
             steps {
                 sshagent (['webserver']) {
                     script {
-                        withCredentials ([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                            sh "${move} ubuntu@${EC2_IP} 'echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin'"
+                        withCredentials ([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCK_USERNAME', passwordVariable: 'DOCK_PASSWORD')]) {
+                            sh "${move} ubuntu@${EC2_IP} 'echo ${DOCK_PASSWORD} | docker login -u ${DOCK_USERNAME} --password-stdin'"
                             sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
                     }
                 }
