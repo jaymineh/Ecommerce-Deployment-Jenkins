@@ -196,3 +196,5 @@ stage('Push to Docker Hub') {
 ![Image uploaded to Dockerhub](images/dockerhub.png)
 
 ![Completed Pipeline](images/complete-pipeline.png)
+
+**Project Completed Successfully!**
