@@ -61,7 +61,32 @@ pipeline {
     }
 ```
 
-- Create a Dockerfile which would be used to build the app. See Dockerfile below:
+- Deploy code to webserver where the code would be built. The code below checks out the main branch and clones the repo on the webserver for it to be built in the next stage:
+
+```
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', url: "${REPO_URL}"
+            }
+        }
+
+        stage('Deploy Code to Webserver') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'git clone ${REPO_URL}'" }
+            }
+        }
+```
+
+*Note that the `webserver` being referenced where sshagent is declared is actually a credential that is stored on Jenkins. The sshagent is basically calling the secret/key behing the `webserver` variable for authentication.*
+
+*Also, `StrictHostKeyChecking=no` is appended to the ssh command in `ssh -o StrictHostKeyChecking=no` to solve an error where the host could not be verified.*
+
+
+**Step 3 - Containerization**
+---
+
+- Create a dockerfile which would be used to build the app. See dockerfile below:
 
 ```
 # Use an official nginx image as the base image
@@ -80,7 +105,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-- Run the stage below to build the Dockerfile. Note that the `webapp.html` and `nginx.conf` files must have been checkout to the repository and downloaded onto the webserver.
+- Run the stage below to build the dockerfile. Note that the `webapp.html` and `nginx.conf` files must have been checkout to the repository and downloaded onto the webserver.
 
 ```
 stage('Build Docker Image') {
@@ -90,3 +115,20 @@ stage('Build Docker Image') {
             }
         }
 ```
+
+- After the dockerfile has been built, include the next stage to run the docker image:
+
+```
+stage('Run Docker Container') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; sudo docker run -d --name ${CONTAINER_NAME} -p ${PORT_MAP} ${DOCKER_IMAGE}'" }
+            }
+        }
+```
+
+- Test to confirm if the docker image is running successfully by checking the url on a browser. Use the public IP of the instance along with the mapped port.
+
+![Running Webapp](images/webapp.png)
+
+*For Jenkins to be able to run docker commands on a remote server, it needs to have permissions on that server. To achieve this, a Jenkins user would need to be created on the remote webserver (which doesn't have Jenkins installed) and added to the docker group.*
