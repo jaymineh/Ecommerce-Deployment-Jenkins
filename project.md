@@ -132,3 +132,67 @@ stage('Run Docker Container') {
 ![Running Webapp](images/webapp.png)
 
 *For Jenkins to be able to run docker commands on a remote server, it needs to have permissions on that server. To achieve this, a Jenkins user would need to be created on the remote webserver (which doesn't have Jenkins installed) and added to the docker group.*
+
+- A new stage needs to be added to ensure that the docker environment is cleaned up on every pipeline run. This will prevent the pipeline from failing when the pipeline tries to build a new image when an existing one is running, with the same name. Use this code block below:
+
+```
+stage('Docker Environment Cleanup') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'rm -rf ${DOCKER_DIR}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rm -f ${CONTAINER_NAME}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rmi -f ${DOCKER_IMAGE}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker rmi -f ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+            }
+        }
+```
+
+
+**Step 4 - Unit Tests**
+---
+
+- Enable Jenkins run the `unit-tests.sh` script which would automatically check the image for expected content. See step below:
+
+```
+stage('Perform Unit Test') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'cd ${DOCKER_DIR}; chmod +x unit-test.sh; sh unit-test.sh'" }
+            }
+        }
+```
+
+![Unit Test Result](images/test-complete.png)
+
+*This stage can be expanded to include a condition that can break the pipeline if the unit test does not return the expected content. This would prevent the pipeline from uploading a "bad" image to the docker repository.*
+
+
+**Step 5 - Upload To Docker Repository**
+---
+
+- Before the image is uploaded to dockerhub, it needs to be tagged. This would enable the image to have a proper tag for versioning when uploaded. Use this step below:
+
+```
+stage('Tag Docker Image') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker tag ${DOCKER_IMAGE} ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+            }
+        }
+```
+
+- After the image is tagged, it is ready to be uploaded to dockerhub. Use the below code to login to dockerhub (account must exist) and upload the docker image to dockerhub.
+
+```
+stage('Push to Docker Hub') {
+            steps {
+                sshagent (['webserver']) {
+                sh "${move} ubuntu@${EC2_IP} 'docker login -u=${DOCKERHUB_USERNAME} -p=${DOCKERHUB_PASSWORD}'"
+                sh "${move} ubuntu@${EC2_IP} 'sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}'" }
+            }
+        }
+```
+
+![Image uploaded to Dockerhub](images/dockerhub.png)
+
+![Completed Pipeline](images/complete-pipeline.png)
