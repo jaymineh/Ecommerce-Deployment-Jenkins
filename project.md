@@ -80,7 +80,7 @@ pipeline {
 
 *Note that the `webserver` being referenced where sshagent is declared is actually a credential that is stored on Jenkins. The sshagent is basically calling the secret/key behing the `webserver` variable for authentication.*
 
-*Also, `StrictHostKeyChecking=no` is appended to the ssh command in `ssh -o StrictHostKeyChecking=no` to solve an error where the host could not be verified.*
+*Also, `StrictHostKeyChecking=no` is appended to the ssh command in `ssh -o StrictHostKeyChecking=no` to solve an error where the host could not be verified. The `.ssh` folder may also need to be copied to `/var/lib/jenkins` and ownership changed to Jenkins so it can read the known hosts and keys in the `.ssh` folder. Another alternative is adding the jenkins user to the group owner of the `.ssh` folder.*
 
 
 **Step 3 - Containerization**
@@ -166,6 +166,7 @@ stage('Perform Unit Test') {
 
 *This stage can be expanded to include a condition that can break the pipeline if the unit test does not return the expected content. This would prevent the pipeline from uploading a "bad" image to the docker repository.*
 
+*An observation with the running of the sh scripts is that single quotes are needed to run simultaneous commands on a remote server. If the single quotes were omitted, only the first part of the entire command would be executed on the remote host, with the rest being done locally. The ; are used in place of && to perform more than 1 command in the entire string.*
 
 **Step 5 - Upload To Docker Repository**
 ---
